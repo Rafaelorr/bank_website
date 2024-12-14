@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% from "navbar.html" import navbar%}
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete account</title>
+</head>
+<body>
+    {{ navbar() }}
+    <header>Delete je account</header>
+    <form action="/delete" method="post">
+        <input type="text" name="naam" required>
+        <input type="text" name="wachtwoord" required>
+        <button type="submit">delete</button>
+    </form>
+</body>
+</html>
