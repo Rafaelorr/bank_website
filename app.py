@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
-from database_functies import sign_up_account, delete_account, login_account, transaction_account
+from sqlite3 import IntegrityError
+from database_functies import *
 
 app = Flask(__name__)
 
@@ -16,10 +17,15 @@ def sign_up():
         print(naam)
         print(wachtwoord)
         print(begin_cash)
+        try:
+          sign_up_account(naam,wachtwoord,begin_cash)
+          return render_template("succes.html")
+        except IntegrityError:
+          return render_template("fail.html")
     return render_template("sign_up.html")
 
 @app.route("/delete",methods=["GET","POST"])
-def delete_user():
+def delete():
     if request.method == "POST":
         naam = request.form.get("naam")
         wachtwoord = request.form.get("wachtwoord")
@@ -30,7 +36,7 @@ def login():
     if request.method == "POST":
         naam = request.form.get("naam")
         wachtwoord = request.form.get("wachtwoord")
-    return render_template("")
+    return render_template("login.html")
 
 @app.route("/transaction",methods=["GET","POST"])
 def transaction():
