@@ -14,9 +14,6 @@ def sign_up():
         naam = request.form.get("naam")
         wachtwoord = request.form.get("wachtwoord")
         begin_cash = request.form.get("begin_cash")
-        print(naam)
-        print(wachtwoord)
-        print(begin_cash)
         try:
           sign_up_account(naam,wachtwoord,begin_cash)
           return render_template("succes.html")
