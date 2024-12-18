@@ -15,9 +15,19 @@ def sign_up_account(naam:str, wachtwoord:str, begin_cash:int):
   cur.close()
   con.close()
 
+#SELECT * FROM gebruikers WHERE naam=? AND wachtwoord=?",(naam,wachtwoord)
+#session["naam"]
 
 def delete_account(naam:str, wachtwoord:str):
-    pass
+    con : Connection = connect("database.db")
+    cur :Cursor = con.cursor()
+    print(naam)
+    print(wachtwoord)
+    cur.execute(f'DELETE from accounts where naam="{naam}"')
+
+    con.commit()
+    cur.close()
+    con.close()
 
 def login_account(naam:str, wachtwoord:str):
     pass
