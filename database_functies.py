@@ -13,8 +13,7 @@ def sign_up_account(naam:str, wachtwoord:str, begin_cash:int):
 def delete_account(naam:str, wachtwoord:str):
     con : Connection = connect("database.db")
     cur :Cursor = con.cursor()
-    print(naam)
-    print(wachtwoord)
+
     cur.execute(f'DELETE from accounts where naam="{naam}"')
 
     con.commit()
@@ -25,19 +24,12 @@ def login_account(naam:str, wachtwoord:str) -> str:
     con :Connection = connect("database.db")
     cur :Cursor = con.cursor()
 
-    print(naam)
-    print(wachtwoord)
-
     cur.execute(f"SELECT * FROM accounts WHERE naam='{naam}' AND wachtwoord='{wachtwoord}'")
     row = cur.fetchone()
     row = tuple(row)
-    print(row)
 
     database_naam = row[0]
     database_wachtwoord = row[1]
-
-    print(database_naam)
-    print(database_wachtwoord)
 
     con.commit()
     cur.close()
