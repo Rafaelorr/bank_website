@@ -29,8 +29,29 @@ def delete_account(naam:str, wachtwoord:str):
     cur.close()
     con.close()
 
-def login_account(naam:str, wachtwoord:str):
-    pass
+def login_account(naam:str, wachtwoord:str) -> str:
+    con :Connection = connect("database.db")
+    cur :Cursor = con.cursor()
+
+    print(naam)
+    print(wachtwoord)
+
+    cur.execute(f"SELECT * FROM accounts WHERE naam='{naam}' AND wachtwoord='{wachtwoord}'")
+    row = cur.fetchone()
+    row = tuple(row)
+    print(row)
+
+    database_naam = row[0]
+    database_wachtwoord = row[1]
+
+    print(database_naam)
+    print(database_wachtwoord)
+
+    con.commit()
+    cur.close()
+    con.close()
+
+    return database_naam, database_wachtwoord
 
 def transaction_account(ontvanger:str, hoeveelheid:int):
     pass
