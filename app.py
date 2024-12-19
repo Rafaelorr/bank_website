@@ -42,6 +42,17 @@ def login():
     if request.method == "POST":
         naam = request.form.get("naam")
         wachtwoord = request.form.get("wachtwoord")
+
+        database_naam, database_wachtwoord = login_account(naam,wachtwoord)
+
+        if naam == database_naam and wachtwoord == database_wachtwoord:
+            print("true")
+            session["naam"] = naam
+            session["wachtwoord"] = wachtwoord
+            return redirect(url_for("transaction"))
+        else:
+            session.clear()
+            return render_template("login.html")
     return render_template("login.html")
 
 @app.route("/transaction",methods=["GET","POST"])
