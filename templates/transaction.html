@@ -10,8 +10,10 @@
     {{ navbar() }}
     <header>maak een transactie</header>
     <form action="/transaction" method="post">
+        <label for="ontvanger">Ontvanger: </label> <br>
         <input type="text" name="ontvanger" required> <br>
-        <input type="number" name="hoeveelheid" required><br>
+        <label for="hoeveelheid">Bedrag: </label> <br>
+        <input type="number" name="hoeveelheid" required> <br>
         <button type="submit">Verzend</button>
     </form>
 </body>
