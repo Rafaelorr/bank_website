@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from sqlite3 import IntegrityError
 from database_functies import *
+from random import choice
+import string
+
+alphabet = string.ascii_letters + string.digits + string.punctuation
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "7978557dsmlg876+47567895457687hsdmfo)çé!(ç)éç(§è!é)§hsmdqfglé§(éééç)é)))&&&&&(èéà!(§-^$ù$;;;;;=ù$^$$*DHESHESH4343SYITYURTRZYEZRTZAERZAEFSD34534534GHDSsqhgDFGRESZHgdqsgqsdggzegd434343585767454jfdqh74678675gezgezS45786djarezr!§é§$^$HRHSDHRDEH!azeghmsidfgeqszfSQ"
+app.config["SECRET_KEY"] = ''.join(choice(alphabet) for _ in range(40))
 
 @app.route("/")
 def home():
