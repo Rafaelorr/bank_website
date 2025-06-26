@@ -68,3 +68,17 @@ This project simulates common SQL injection vulnerabilities through login forms 
 This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 You are free to use, share, and modify this software under the terms of the license.
 For more details, see the [LICENSE](./LICENSE) file or visit [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
+
+---
+
+## 🤝 Collaboration
+
+I welcome and appreciate collaboration!  
+But there're some guidelines to make things easier.
+
+### 💡 Guidelines
+   * Write clear, concise commit messages.
+
+   * Follow the existing naming conventions.
+
+   * Please be respectful in discussions.
