@@ -23,9 +23,11 @@ def sign_up():
           sign_up_account(naam,wachtwoord,begin_cash)
           session["naam"] = naam
           session["wachtwoord"] = wachtwoord
-          return render_template("succes.html")
+          bericht = f"{naam}'s account is succesvol aangemaakt."
+          return render_template("succes.html", resulaat=bericht)
         except IntegrityError:
-          return render_template("fail.html")
+          bericht = f"{naam} is al in gebruik."
+          return render_template("fail.html", resulaat=bericht)
     return render_template("sign_up.html")
 
 @app.route("/delete",methods=["GET","POST"])
