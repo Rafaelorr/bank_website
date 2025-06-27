@@ -40,8 +40,12 @@ def delete():
             delete_account(naam,wachtwoord)
             bericht = f"{naam}'s account is succesvol gedelete."
             return render_template("succes.html", resulaat=bericht)
-        elif session.get("naam") == None and session.get("wachtwoord") == None:
-            return redirect(url_for("login"))
+        elif session.get("naam") == None or session.get("wachtwoord") == None:
+            bericht = f"Je moet ingeloged zijn om je account te deleten."
+            return redirect(url_for("login", resulaat=bericht))
+        elif session.get("naam") != naam or session.get("wachtwoord") != wachtwoord:
+            bericht = f"Foute gegevens"
+            return redirect(url_for("login", resulaat=bericht))
     return render_template("delete.html")
 
 @app.route("/login",methods=["GET","POST"])
