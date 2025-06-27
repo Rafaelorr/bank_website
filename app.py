@@ -38,7 +38,8 @@ def delete():
         if naam == session.get("naam") and wachtwoord == session.get("wachtwoord"):
             session.clear()
             delete_account(naam,wachtwoord)
-            return render_template("succes.html")
+            bericht = f"{naam}'s account is succesvol gedelete."
+            return render_template("succes.html", resulaat=bericht)
         elif session.get("naam") == None and session.get("wachtwoord") == None:
             return redirect(url_for("login"))
     return render_template("delete.html")
