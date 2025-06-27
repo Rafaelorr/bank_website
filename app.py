@@ -53,14 +53,14 @@ def login():
         database_naam, database_wachtwoord = login_account(naam,wachtwoord)
 
         if naam == database_naam and wachtwoord == database_wachtwoord:
-            print("true")
             session["naam"] = naam
             session["wachtwoord"] = wachtwoord
             return redirect(url_for("transaction"))
         else:
             session.clear()
-            return render_template("login.html")
-    return render_template("login.html")
+            bericht = f"Deze gegevens zijn niet correct."
+            return render_template("login.html",resulaat=bericht)
+    return render_template("login.html",resulaat="")
 
 @app.route("/transaction",methods=["GET","POST"])
 def transaction():
