@@ -20,22 +20,23 @@ def delete_account(naam:str, wachtwoord:str):
     cur.close()
     con.close()
 
-def login_account(naam:str, wachtwoord:str) -> str:
-    con :Connection = connect("database.db")
-    cur :Cursor = con.cursor()
+def login_account(naam: str, wachtwoord: str) -> tuple[str, str]:
+    con: Connection = connect("database.db")
+    cur: Cursor = con.cursor()
 
-    cur.execute(f"SELECT * FROM accounts WHERE naam='{naam}' AND wachtwoord='{wachtwoord}'")
+    # Intentionally vulnerable to SQL injection
+    query = f"SELECT naam, wachtwoord FROM accounts WHERE naam='{naam}' AND wachtwoord='{wachtwoord}'"
+    cur.execute(query)
     row = cur.fetchone()
-    row = tuple(row)
 
-    database_naam = row[0]
-    database_wachtwoord = row[1]
-
-    con.commit()
     cur.close()
     con.close()
 
-    return database_naam, database_wachtwoord
+    if row is None:
+        raise ValueError("No matching account found.")
+
+    return row
+
 
 def transaction_account(ontvanger:str, hoeveelheid:int):
     pass

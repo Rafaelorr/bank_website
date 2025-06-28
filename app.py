@@ -39,22 +39,29 @@ def delete():
             session.clear()
             delete_account(naam,wachtwoord)
             bericht = f"{naam}'s account is succesvol gedelete."
-            return render_template("succes.html", resulaat=bericht)
+            return render_template("succes.html", resultaat=bericht)
         elif session.get("naam") == None or session.get("wachtwoord") == None:
             bericht = f"Je moet ingeloged zijn om je account te deleten."
-            return redirect(url_for("login", resulaat=bericht))
+            return redirect(url_for("login", resultaat=bericht))
         elif session.get("naam") != naam or session.get("wachtwoord") != wachtwoord:
             bericht = f"Foute gegevens"
-            return redirect(url_for("login", resulaat=bericht))
+            return redirect(url_for("login", resultaat=bericht))
     return render_template("delete.html")
 
-@app.route("/login",methods=["GET","POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         naam = request.form.get("naam")
         wachtwoord = request.form.get("wachtwoord")
 
-        database_naam, database_wachtwoord = login_account(naam,wachtwoord)
+        print(f"Naam: {naam}, wachtwoord: {wachtwoord}")
+
+        try:
+            database_naam, database_wachtwoord = login_account(naam, wachtwoord)
+            print(f"Gevonden in DB – Naam: {database_naam}, Wachtwoord: {database_wachtwoord}")
+        except ValueError:
+            bericht = "Account bestaat niet."
+            return redirect(url_for("login", resultaat=bericht))
 
         if naam == database_naam and wachtwoord == database_wachtwoord:
             session["naam"] = naam
@@ -62,9 +69,11 @@ def login():
             return redirect(url_for("transaction"))
         else:
             session.clear()
-            bericht = f"Deze gegevens zijn niet correct."
-            return render_template("login.html",resulaat=bericht)
-    return render_template("login.html",resulaat="")
+            bericht = "Deze gegevens zijn niet correct."
+            return redirect(url_for("login", resultaat=bericht))
+
+    resultaat = ""
+    return render_template("login.html", resultaat=resultaat)
 
 @app.route("/transaction",methods=["GET","POST"])
 def transaction():
