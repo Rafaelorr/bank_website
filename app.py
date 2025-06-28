@@ -54,11 +54,8 @@ def login():
         naam = request.form.get("naam")
         wachtwoord = request.form.get("wachtwoord")
 
-        print(f"Naam: {naam}, wachtwoord: {wachtwoord}")
-
         try:
             database_naam, database_wachtwoord = login_account(naam, wachtwoord)
-            print(f"Gevonden in DB – Naam: {database_naam}, Wachtwoord: {database_wachtwoord}")
         except ValueError:
             bericht = "Account bestaat niet."
             return redirect(url_for("login", resultaat=bericht))
