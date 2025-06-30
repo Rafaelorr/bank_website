@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, flash, get_flashed_messages
 from sqlite3 import IntegrityError
 from database_functies import *
 from random import choice
@@ -23,11 +23,11 @@ def sign_up():
           sign_up_account(naam,wachtwoord,begin_cash)
           session["naam"] = naam
           session["wachtwoord"] = wachtwoord
-          bericht = f"{naam}'s account is succesvol aangemaakt."
-          return render_template("succes.html", resultaat=bericht)
+          flash(f"{naam}'s account is succesvol aangemaakt.","succes")
+          return render_template("succes.html")
         except IntegrityError:
-          bericht = f"{naam} is al in gebruik."
-          return render_template("fail.html", resultaat=bericht)
+          flash(f"{naam} is al in gebruik.","error")
+          return render_template("fail.html")
     return render_template("sign_up.html")
 
 @app.route("/delete",methods=["GET","POST"])
@@ -38,14 +38,14 @@ def delete():
         if naam == session.get("naam") and wachtwoord == session.get("wachtwoord"):
             session.clear()
             delete_account(naam,wachtwoord)
-            bericht = f"{naam}'s account is succesvol gedelete."
-            return render_template("succes.html", resultaat=bericht)
+            flash(f"{naam}'s account is succesvol gedelete.","succes")
+            return render_template("succes.html")
         elif session.get("naam") == None or session.get("wachtwoord") == None:
-            bericht = f"Je moet ingeloged zijn om je account te deleten."
-            return redirect(url_for("login", resultaat=bericht))
+            flash(f"Je moet ingeloged zijn om je account te deleten.","error")
+            return redirect(url_for("login"))
         elif session.get("naam") != naam or session.get("wachtwoord") != wachtwoord:
-            bericht = f"Foute gegevens"
-            return redirect(url_for("login", resultaat=bericht))
+            flash(f"Foute gegevens","error")
+            return redirect(url_for("login"))
     return render_template("delete.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -57,8 +57,8 @@ def login():
         try:
             database_naam, database_wachtwoord = login_account(naam, wachtwoord)
         except ValueError:
-            bericht = "Account bestaat niet."
-            return redirect(url_for("login", resultaat=bericht))
+            flash("Account bestaat niet.","error")
+            return redirect(url_for("login"))
 
         if naam == database_naam and wachtwoord == database_wachtwoord:
             session["naam"] = naam
@@ -66,11 +66,10 @@ def login():
             return redirect(url_for("transaction"))
         else:
             session.clear()
-            bericht = "Deze gegevens zijn niet correct."
-            return redirect(url_for("login", resultaat=bericht))
+            flash("Deze gegevens zijn niet correct.")
+            return redirect(url_for("login","error"))
 
-    resultaat = ""
-    return render_template("login.html", resultaat=resultaat)
+    return render_template("login.html")
 
 @app.route("/transaction",methods=["GET","POST"])
 def transaction():
@@ -80,16 +79,18 @@ def transaction():
         if session.get("naam") and session.get("wachtwoord"):
             try:
               transaction_system(ontvanger,session.get("naam"),bedrag)
-              resultaat = f"Je transactie naar {ontvanger} is succesvol verlopen."
-              return render_template("succes.html",resultaat=resultaat)
+              flash(f"Je transactie naar {ontvanger} is succesvol verlopen.","succes")
+              return render_template("succes.html")
             except account_not_found:
-                return redirect(url_for("transaction",resultaat="Account van je verzender is niet gevonden."))
+                flash("Account van je verzender is niet gevonden.","error")
+                return redirect(url_for("transaction"))
             except not_enough_funds:
-                resultaat = f"Je hebt niet genoeg geld."
-                return redirect(url_for("transaction",resultaat=resultaat))
+                flash(f"Je hebt niet genoeg geld.","error")
+                return redirect(url_for("transaction"))
         else:
-            # template met bericht "Je moet ingelogde zijn om een transactie te maken"
-            return redirect(url_for("transaction",resultaat="Je moet ingelogde zijn om een transactie te maken."))
+            # template met bericht 
+            flash("Je moet ingelogde zijn om een transactie te maken.","error")
+            return redirect(url_for("transaction"))
     return render_template("transaction.html")
 
 if __name__ == "__main__":
