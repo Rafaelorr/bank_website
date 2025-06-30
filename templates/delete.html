@@ -8,7 +8,13 @@
 </head>
 <body>
     {{ navbar() }}
-    {{ resulaat}}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <header class="{{ category }}">{{ message }}</header>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <header>Delete je account</header>
     <form action="/delete" method="post">
         <label for="naam">Gebruikersnaam: </label> <br>

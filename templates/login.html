@@ -9,7 +9,13 @@
 <body>
     {{ navbar() }}
     <header>Login</header>
-    {{ resultaat }}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <header class="{{ category }}">{{ message }}</header>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <form action="/login" method="post">
         <label for="naam">Gebruikersnaam: </label> <br>
         <input type="text" name="naam" required> <br>
