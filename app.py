@@ -66,8 +66,8 @@ def login():
             return redirect(url_for("transaction"))
         else:
             session.clear()
-            flash("Deze gegevens zijn niet correct.")
-            return redirect(url_for("login","error"))
+            flash("Deze gegevens zijn niet correct.","error")
+            return redirect(url_for("login"))
 
     return render_template("login.html")
 
