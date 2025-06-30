@@ -1,4 +1,5 @@
 from sqlite3 import Cursor, Connection, connect
+from custom_errors import *
 
 def sign_up_account(naam:str, wachtwoord:str, begin_cash:int):
   con :Connection = connect("database.db")
@@ -38,5 +39,22 @@ def login_account(naam: str, wachtwoord: str) -> tuple[str, str]:
     return row
 
 
-def transaction_account(ontvanger:str, hoeveelheid:int):
-    pass
+def transaction_system(ontvanger:str, verzender:str, bedrag:int):
+    con :Connection = connect("database.db")
+    cur :Cursor = con.cursor()
+    # Check of de ontvanger bestaat
+    res = cur.execute(f"SELECT naam FROM accounts WHERE naam = '{ontvanger}'")
+    if res.fetchone() is None:
+        raise account_not_found()
+    # Check of het account genoeg geld heeft
+    res = cur.execute(f"SELECT * FROM users WHERE balance >= {bedrag} AND naam = '{verzender}'")
+    if res.fetchone() is None:
+        raise not_enough_funds()
+    # Voeg het bedrag toe aan het account van de ontvanger
+    cur.execute(f"UPDATE accounts SET balance = balance + {bedrag} WHERE naam = {ontvanger}")
+    # Trek het bedrag af van het account van de zender
+    cur.execute(f"UPDATE accounts SET balance = balance - {bedrag} WHERE naam = {verzender}")
+
+    con.commit()
+    cur.close()
+    con.close()

@@ -76,7 +76,20 @@ def login():
 def transaction():
     if request.method == "POST":
         ontvanger = request.form.get("ontvanger")
-        hoeveelheid = request.form.get("hoeveelheid")
+        bedrag = request.form.get("hoeveelheid")
+        if session.get("naam") and session.get("wachtwoord"):
+            try:
+              transaction_system(ontvanger,session.get("naam"),bedrag)
+              resultaat = f"Je transactie naar {ontvanger} is succesvol verlopen."
+              return render_template("succes.html",resultaat=resultaat)
+            except account_not_found:
+                return redirect(url_for("transaction",resultaat="Account van je verzender is niet gevonden."))
+            except not_enough_funds:
+                resultaat = f"Je hebt niet genoeg geld."
+                return redirect(url_for("transaction",resultaat=resultaat))
+        else:
+            # template met bericht "Je moet ingelogde zijn om een transactie te maken"
+            return redirect(url_for("transaction",resultaat="Je moet ingelogde zijn om een transactie te maken."))
     return render_template("transaction.html")
 
 if __name__ == "__main__":
