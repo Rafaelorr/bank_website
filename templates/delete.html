@@ -4,11 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/berichten.css">
     <title>Delete account</title>
 </head>
 <body>
     {{ navbar() }}
-    {{ resulaat}}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <header class="{{ category }}">{{ message }}</header>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <header>Delete je account</header>
     <form action="/delete" method="post">
         <label for="naam">Gebruikersnaam: </label> <br>
