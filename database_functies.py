@@ -47,13 +47,13 @@ def transaction_system(ontvanger:str, verzender:str, bedrag:int):
     if res.fetchone() is None:
         raise account_not_found()
     # Check of het account genoeg geld heeft
-    res = cur.execute(f"SELECT * FROM users WHERE balance >= {bedrag} AND naam = '{verzender}'")
+    res = cur.execute(f"SELECT * FROM accounts WHERE balance >= {bedrag} AND naam = '{verzender}'")
     if res.fetchone() is None:
         raise not_enough_funds()
     # Voeg het bedrag toe aan het account van de ontvanger
-    cur.execute(f"UPDATE accounts SET balance = balance + {bedrag} WHERE naam = {ontvanger}")
+    cur.execute(f"UPDATE accounts SET balance = balance + {bedrag} WHERE naam = '{ontvanger}'")
     # Trek het bedrag af van het account van de zender
-    cur.execute(f"UPDATE accounts SET balance = balance - {bedrag} WHERE naam = {verzender}")
+    cur.execute(f"UPDATE accounts SET balance = balance - {bedrag} WHERE naam = '{verzender}'")
 
     con.commit()
     cur.close()
