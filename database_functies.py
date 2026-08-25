@@ -1,26 +1,35 @@
 from sqlite3 import Cursor, Connection, connect
-from custom_errors import *
+from custom_errors import AccountNotFound, NotEnoughFunds
 
 def sign_up_account(naam:str, wachtwoord:str, begin_cash:int):
-  # Maak connectie met de database
-  con :Connection = connect("database.db")
-  cur :Cursor = con.cursor()  
+    """
+    De database logica voor het sign up systeem.
+    Opzettelijk kwetsbaar voor sql injections.
+    """
 
-  # voeg een nieuw account (met naam, wachtwoord, begin_balance) toe aan de database
-  cur.execute(f"INSERT INTO accounts('naam', 'wachtwoord', 'balance') VALUES({naam},{wachtwoord},{begin_cash})")
+    # Maak connectie met de database
+    con :Connection = connect("database.db")
+    cur :Cursor = con.cursor()
 
-  # Stop connectie met de database
-  con.commit()
-  cur.close()
-  con.close()
+    # voeg een nieuw account (met naam, wachtwoord, begin_balance) toe aan de database
+    cur.execute(f"INSERT INTO accounts('naam', 'wachtwoord', 'balance') VALUES({naam},{wachtwoord},{begin_cash})")
+
+    # Stop connectie met de database
+    con.commit()
+    cur.close()
+    con.close()
 
 def delete_account(naam:str, wachtwoord:str):
+    """
+    De database logica om een account te verwijderen.
+    Opzettelijk kwetsbaar voor sql injections.
+    """
     # Maak connectie met de database
     con : Connection = connect("database.db")
     cur :Cursor = con.cursor()
 
     # verwijder de account met de ingegeven naaam
-    cur.execute(f'DELETE from accounts where naam="{naam}"')
+    cur.execute(f"DELETE from accounts where naam='{naam}' AND wachtwoord='{wachtwoord}'")
 
     # Stop connectie met de database
     con.commit()
@@ -28,6 +37,11 @@ def delete_account(naam:str, wachtwoord:str):
     con.close()
 
 def login_account(naam: str, wachtwoord: str) -> tuple[str, str]:
+    """
+    De database logica voor het login systeem.
+    Opzettelijk kwetsbaar voor sql injections.
+    """
+
     # Maak connectie met de database
     con: Connection = connect("database.db")
     cur: Cursor = con.cursor()
@@ -47,6 +61,11 @@ def login_account(naam: str, wachtwoord: str) -> tuple[str, str]:
 
 
 def transaction_system(ontvanger:str, verzender:str, bedrag:int):
+    """
+    De database logica voor transacties tussen gebruiksers.
+    Opzettelijk kwetsbaar gemaakt voor sql injections.
+    """
+
     # Maak connectie met de database
     con :Connection = connect("database.db")
     cur :Cursor = con.cursor()
@@ -54,12 +73,12 @@ def transaction_system(ontvanger:str, verzender:str, bedrag:int):
     # Check of de ontvanger bestaat
     res = cur.execute(f"SELECT naam FROM accounts WHERE naam = '{ontvanger}'")
     if res.fetchone() is None:
-        raise account_not_found()
+        raise AccountNotFound()
 
     # Check of het account genoeg geld heeft
     res = cur.execute(f"SELECT * FROM accounts WHERE balance >= {bedrag} AND naam = '{verzender}'")
     if res.fetchone() is None:
-        raise not_enough_funds()
+        raise NotEnoughFunds()
 
     # Voeg het bedrag toe aan het account van de ontvanger
     cur.execute(f"UPDATE accounts SET balance = balance + {bedrag} WHERE naam = '{ontvanger}'")
